@@ -7,7 +7,6 @@
 | `POST` | `/auth/register` | Register new user |
 | `POST` | `/auth/login` | Login, returns JWT |
 | `POST` | `/auth/logout` | Invalidate token |
-| `POST` | `/auth/refresh` | Refresh access token |
 | `POST` | `/auth/forgot-password` | Request password reset |
 
 ---
