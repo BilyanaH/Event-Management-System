@@ -6,10 +6,7 @@
 2. [Database Schema](#database-schema)
 
 ---
-
-<a id="api-endpoints"></a>
-
-<a id="authentication"></a>
+# API endpoints
 
 ## Authentication `Public`
 
@@ -22,8 +19,6 @@
 
 ---
 
-<a id="users"></a>
-
 ## Users `Authenticated`
 
 | Method | Endpoint | Description |
@@ -34,8 +29,6 @@
 | `GET` | `/users` | List users (admin, paginated) |
 
 ---
-
-<a id="events"></a>
 
 ## Events `Core Resource`
 
@@ -63,8 +56,6 @@
 
 ---
 
-<a id="tickets"></a>
-
 ## Tickets
 
 | Method | Endpoint | Description |
@@ -76,8 +67,6 @@
 | `DELETE` | `/events/{eventId}/tickets/{id}` | Remove ticket type |
 
 ---
-
-<a id="registrations"></a>
 
 ## Registrations
 
@@ -91,8 +80,6 @@
 | `GET` | `/users/me/registrations` | My registrations |
 
 ---
-
-<a id="agenda-speakers"></a>
 
 ## Agenda & Speakers
 
@@ -124,8 +111,6 @@
 
 ---
 
-<a id="feedback-analytics"></a>
-
 ## Feedback & Analytics
 
 ### Feedback
@@ -144,8 +129,6 @@
 | `GET` | `/events/{eventId}/analytics/attendance` | Attendance over time |
 
 ---
-
-<a id="database-schema"></a>
 
 ## Database Schema
 
