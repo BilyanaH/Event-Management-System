@@ -6,9 +6,9 @@
 2. [Database Schema](#database-schema)
 
 ---
-# API endpoints
+## API endpoints
 
-## Authentication `Public`
+### Authentication `Public`
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -19,7 +19,7 @@
 
 ---
 
-## Users `Authenticated`
+### Users `Authenticated`
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -30,7 +30,7 @@
 
 ---
 
-## Events `Core Resource`
+### Events `Core Resource`
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -42,7 +42,7 @@
 | `DELETE` | `/events/{id}` | Delete event (organizer) |
 | `GET` | `/events/{id}/summary` | Event summary with stats |
 
-### Query Parameters for `GET /events`
+#### Query Parameters for `GET /events`
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
@@ -56,7 +56,7 @@
 
 ---
 
-## Tickets
+### Tickets
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -68,7 +68,7 @@
 
 ---
 
-## Registrations
+### Registrations
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -81,9 +81,9 @@
 
 ---
 
-## Agenda & Speakers
+### Agenda & Speakers
 
-### Agenda Items
+#### Agenda Items
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -93,7 +93,7 @@
 | `DELETE` | `/events/{eventId}/agenda/{id}` | Remove agenda item |
 | `PATCH` | `/events/{eventId}/agenda/reorder` | Reorder agenda items |
 
-### Speakers
+#### Speakers
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -102,7 +102,7 @@
 | `GET` | `/speakers/{id}` | Get speaker details |
 | `PUT` | `/speakers/{id}` | Update speaker |
 
-### Presentation Materials
+#### Presentation Materials
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -111,9 +111,9 @@
 
 ---
 
-## Feedback & Analytics
+### Feedback & Analytics
 
-### Feedback
+#### Feedback
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -121,7 +121,7 @@
 | `GET` | `/events/{eventId}/feedback` | List feedback (organizer) |
 | `GET` | `/events/{eventId}/feedback/summary` | Aggregated ratings |
 
-### Analytics
+#### Analytics
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
