@@ -29,11 +29,20 @@ public class Feedback {
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    @Column(nullable = false)
-    private Integer rating;
+    @Column(name = "overall_rating", nullable = false)
+    private Integer overallRating;
 
     @Column(columnDefinition = "TEXT")
     private String comment;
+
+    @Column(name = "venue_rating")
+    private Integer venueRating;
+
+    @Column(name = "content_rating")
+    private Integer contentRating;
+
+    @Column(name = "organization_rating")
+    private Integer organizationRating;
 
     @Column(name = "submitted_at", nullable = false, updatable = false)
     private LocalDateTime submittedAt;

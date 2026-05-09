@@ -1,7 +1,7 @@
 package bg.fmi.eventplatform.domain;
 
 import bg.fmi.eventplatform.vo.EventStatus;
-import bg.fmi.eventplatform.vo.EventType;
+import bg.fmi.eventplatform.vo.EventCategory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,8 +45,8 @@ public class Event {
     private EventStatus status;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "event_type")
-    private EventType eventType;
+    @Column(name = "category")
+    private EventCategory category;
 
     @Column(name = "image_url")
     private String imageUrl;

@@ -1,6 +1,6 @@
 package bg.fmi.eventplatform.vo;
 
-public enum EventType {
+public enum EventCategory {
     MUSIC,
     PERFORMING_AND_VISUAL_ARTS,
     NIGHTLIFE,
