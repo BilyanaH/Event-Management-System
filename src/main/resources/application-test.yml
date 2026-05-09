@@ -1,0 +1,10 @@
+# This is the application configuration file for the test environment.
+# It uses an in-memory H2 database and configures JPA to create and drop the schema for each test run.
+spring:
+  datasource:
+    url: jdbc:h2:mem:eventplatform_test;MODE=PostgreSQL
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
