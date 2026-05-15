@@ -48,6 +48,7 @@
 |-----------|------|-------------|
 | `status` | string | Filter by status: `DRAFT`, `PUBLISHED`, `CANCELLED`, `COMPLETED` |
 | `category` | string | Filter by event category |
+| `city` | string | Filter by city |
 | `date_from` | ISO 8601 | Events starting after this date |
 | `date_to` | ISO 8601 | Events starting before this date |
 | `page` | int | Page number (default: 0) |
