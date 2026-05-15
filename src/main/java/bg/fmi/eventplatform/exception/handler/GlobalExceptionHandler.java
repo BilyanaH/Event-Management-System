@@ -1,7 +1,8 @@
 package bg.fmi.eventplatform.exception.handler;
 
-import bg.fmi.eventplatform.dto.ErrorResponse;
+import bg.fmi.eventplatform.dto.response.ErrorResponse;
 import bg.fmi.eventplatform.exception.EmailAlreadyUsedException;
+import bg.fmi.eventplatform.exception.EntityNotFoundException;
 import bg.fmi.eventplatform.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final int BAD_REQUEST_CODE = 400;
+    private static final int FORBIDDEN_CODE = 403;
     private static final int NOT_FOUND_CODE = 404;
     private static final int CONFLICT_CODE = 409;
 
@@ -42,5 +44,17 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserNotFound(UserNotFoundException ex, HttpServletRequest request) {
         return new ErrorResponse(LocalDateTime.now(), NOT_FOUND_CODE, ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleEntityNotFound(EntityNotFoundException ex, HttpServletRequest request) {
+        return new ErrorResponse(LocalDateTime.now(), NOT_FOUND_CODE, ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(java.nio.file.AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleAccessDenied(java.nio.file.AccessDeniedException ex, HttpServletRequest request) {
+        return new ErrorResponse(LocalDateTime.now(), FORBIDDEN_CODE, ex.getMessage(), request.getRequestURI());
     }
 }

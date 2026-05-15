@@ -1,4 +1,4 @@
-package bg.fmi.eventplatform.dto;
+package bg.fmi.eventplatform.dto.request;
 
 import bg.fmi.eventplatform.vo.UserRole;
 import jakarta.validation.constraints.Email;

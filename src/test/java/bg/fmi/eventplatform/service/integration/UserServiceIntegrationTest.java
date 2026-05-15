@@ -1,7 +1,7 @@
 package bg.fmi.eventplatform.service.integration;
 
 import bg.fmi.eventplatform.domain.User;
-import bg.fmi.eventplatform.dto.UserRequest;
+import bg.fmi.eventplatform.dto.request.UserRequest;
 import bg.fmi.eventplatform.exception.EmailAlreadyUsedException;
 import bg.fmi.eventplatform.exception.UserNotFoundException;
 import bg.fmi.eventplatform.repository.UserRepository;

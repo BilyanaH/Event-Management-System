@@ -1,4 +1,4 @@
-package bg.fmi.eventplatform.dto;
+package bg.fmi.eventplatform.dto.response;
 
 import java.time.LocalDateTime;
 

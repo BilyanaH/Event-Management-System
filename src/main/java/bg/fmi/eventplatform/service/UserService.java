@@ -1,10 +1,11 @@
 package bg.fmi.eventplatform.service;
 
 import bg.fmi.eventplatform.domain.User;
-import bg.fmi.eventplatform.dto.UserRequest;
+import bg.fmi.eventplatform.dto.request.UserRequest;
 import bg.fmi.eventplatform.exception.EmailAlreadyUsedException;
 import bg.fmi.eventplatform.exception.UserNotFoundException;
 import bg.fmi.eventplatform.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,15 +15,19 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
     public User createUser(UserRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyUsedException(request.email());
         }
         User user = new User(request);
+        user.setPassword(passwordEncoder.encode(request.password()));
         return userRepository.save(user);
     }
 
