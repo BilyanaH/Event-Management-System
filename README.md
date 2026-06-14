@@ -1,23 +1,72 @@
 # Event Management System
 
+A Spring Boot 4 / Java 21 REST API for organising events, selling tickets, registering attendees, and gathering feedback.
+
 ## Contents
 
-1. [API Endpoints](#api-endpoints)
-2. [Database Schema](#database-schema)
+1. [Run locally](#run-locally)
+2. [Authentication](#authentication)
+3. [API Endpoints](#api-endpoints)
+4. [Database Schema](#database-schema)
 
 ---
-## API endpoints
+## Run locally
 
-### Authentication `Public`
+The app uses **MySQL** in dev and **H2** in tests.
+
+### Required env vars
+
+Copy `.env.example` to `.env` and fill in real values, or export them in your shell:
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `DB_URL` | `jdbc:mysql://localhost:3306/eventplatform?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC` | MySQL JDBC URL |
+| `DB_USER` | `root` | MySQL user |
+| `DB_PASSWORD` | `root` | MySQL password |
+| `JWT_SECRET` | `change-me-...` | At least 32 bytes, signs JWT tokens |
+| `JWT_EXPIRATION_MS` | `86400000` | Token lifetime in ms (24h) |
+| `CLOUDINARY_CLOUD_NAME` | _empty_ | Cloudinary cloud name |
+| `CLOUDINARY_API_KEY` | _empty_ | Cloudinary API key |
+| `CLOUDINARY_API_SECRET` | _empty_ | Cloudinary API secret |
+
+If the Cloudinary vars are blank the app still boots, but `POST /speakers/{id}/materials` will fail until they are set.
+
+### Start MySQL via Docker
+
+```bash
+docker run --name eventplatform-mysql -e MYSQL_ROOT_PASSWORD=root \
+  -e MYSQL_DATABASE=eventplatform -p 3306:3306 -d mysql:8.0
+```
+
+### Run the app
+
+```bash
+./mvnw spring-boot:run
+```
+
+Swagger UI is exposed at `http://localhost:8080/swagger-ui.html`. Click *Authorize* and paste the token returned from `POST /auth/login` (without the `Bearer ` prefix).
+
+### Run the tests
+
+```bash
+./mvnw test
+```
+
+Tests run against an in-memory H2 database with the `test` profile and do not require MySQL.
+
+---
+## Authentication
+
+All endpoints except those under `/auth/**`, the GET endpoints on events/speakers/agenda/tickets/feedback summary, and `/swagger-ui/**` require a valid JWT in the `Authorization: Bearer <token>` header.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/auth/register` | Register new user |
+| `POST` | `/auth/register` | Register new user, returns JWT |
 | `POST` | `/auth/login` | Login, returns JWT |
-| `POST` | `/auth/logout` | Invalidate token |
-| `POST` | `/auth/forgot-password` | Request password reset |
+| `POST` | `/auth/logout` | Invalidate token (process-local blacklist) |
 
 ---
+## API endpoints
 
 ### Users `Authenticated`
 

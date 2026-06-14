@@ -2,9 +2,12 @@ package bg.fmi.eventplatform.service;
 
 import bg.fmi.eventplatform.domain.User;
 import bg.fmi.eventplatform.dto.request.UserRequest;
+import bg.fmi.eventplatform.dto.request.UserUpdateRequest;
 import bg.fmi.eventplatform.exception.EmailAlreadyUsedException;
 import bg.fmi.eventplatform.exception.UserNotFoundException;
 import bg.fmi.eventplatform.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,11 +48,27 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
     public User updateUser(Long id, User updatedUser) {
         User user = getUserById(id);
         user.setFirstName(updatedUser.getFirstName());
         user.setLastName(updatedUser.getLastName());
         user.setEmail(updatedUser.getEmail());
+        user.setUpdatedAt(LocalDateTime.now());
+        return userRepository.save(user);
+    }
+
+    public User updateProfile(Long id, UserUpdateRequest request) {
+        User user = getUserById(id);
+        if (!user.getEmail().equals(request.email()) && userRepository.existsByEmail(request.email())) {
+            throw new EmailAlreadyUsedException(request.email());
+        }
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
+        user.setEmail(request.email());
         user.setUpdatedAt(LocalDateTime.now());
         return userRepository.save(user);
     }

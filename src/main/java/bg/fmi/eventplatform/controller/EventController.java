@@ -3,6 +3,7 @@ package bg.fmi.eventplatform.controller;
 import bg.fmi.eventplatform.domain.User;
 import bg.fmi.eventplatform.dto.request.EventRequest;
 import bg.fmi.eventplatform.dto.response.EventResponse;
+import bg.fmi.eventplatform.dto.response.EventSummaryResponse;
 import bg.fmi.eventplatform.service.EventService;
 import bg.fmi.eventplatform.vo.EventCategory;
 import bg.fmi.eventplatform.vo.EventStatus;
@@ -61,6 +62,12 @@ public class EventController {
     public ResponseEntity<EventResponse> getEventById(@PathVariable Long id) {
         EventResponse eventResponse = eventService.getEventById(id);
         return ResponseEntity.ok(eventResponse);
+    }
+
+    @GetMapping("/{id}/summary")
+    @Operation(summary = "Event summary with stats")
+    public ResponseEntity<EventSummaryResponse> getEventSummary(@PathVariable Long id) {
+        return ResponseEntity.ok(eventService.getEventSummary(id));
     }
 
     @PutMapping("/{id}")

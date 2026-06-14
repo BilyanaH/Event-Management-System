@@ -7,6 +7,7 @@ import bg.fmi.eventplatform.repository.UserRepository;
 import bg.fmi.eventplatform.vo.EventCategory;
 import bg.fmi.eventplatform.vo.EventStatus;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 
 @Order(2)
 @Component
+@Profile("!test")
 public class EventSeeder implements CommandLineRunner {
 
     private final EventRepository eventRepository;

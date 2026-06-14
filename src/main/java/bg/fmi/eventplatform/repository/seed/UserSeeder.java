@@ -5,12 +5,14 @@ import bg.fmi.eventplatform.dto.request.UserRequest;
 import bg.fmi.eventplatform.repository.UserRepository;
 import bg.fmi.eventplatform.vo.UserRole;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Order(1)
 @Component
+@Profile("!test")
 public class UserSeeder implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

@@ -3,7 +3,9 @@ package bg.fmi.eventplatform.exception.handler;
 import bg.fmi.eventplatform.dto.response.ErrorResponse;
 import bg.fmi.eventplatform.exception.EmailAlreadyUsedException;
 import bg.fmi.eventplatform.exception.EntityNotFoundException;
+import bg.fmi.eventplatform.exception.InvalidCredentialsException;
 import bg.fmi.eventplatform.exception.UserNotFoundException;
+import bg.fmi.eventplatform.exception.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -18,13 +20,11 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final int BAD_REQUEST_CODE = 400;
+    private static final int UNAUTHORIZED_CODE = 401;
     private static final int FORBIDDEN_CODE = 403;
     private static final int NOT_FOUND_CODE = 404;
     private static final int CONFLICT_CODE = 409;
 
-    /**
-     * Handles validation errors for method arguments with Spring validation annotations
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBindValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -32,6 +32,12 @@ public class GlobalExceptionHandler {
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.joining("; "));
         return new ErrorResponse(LocalDateTime.now(), BAD_REQUEST_CODE, message, request.getRequestURI());
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidation(ValidationException ex, HttpServletRequest request) {
+        return new ErrorResponse(LocalDateTime.now(), BAD_REQUEST_CODE, ex.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(EmailAlreadyUsedException.class)
@@ -52,9 +58,21 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(LocalDateTime.now(), NOT_FOUND_CODE, ex.getMessage(), request.getRequestURI());
     }
 
+    @ExceptionHandler(InvalidCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleInvalidCredentials(InvalidCredentialsException ex, HttpServletRequest request) {
+        return new ErrorResponse(LocalDateTime.now(), UNAUTHORIZED_CODE, ex.getMessage(), request.getRequestURI());
+    }
+
     @ExceptionHandler(java.nio.file.AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleAccessDenied(java.nio.file.AccessDeniedException ex, HttpServletRequest request) {
+        return new ErrorResponse(LocalDateTime.now(), FORBIDDEN_CODE, ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleSpringAccessDenied(org.springframework.security.access.AccessDeniedException ex, HttpServletRequest request) {
         return new ErrorResponse(LocalDateTime.now(), FORBIDDEN_CODE, ex.getMessage(), request.getRequestURI());
     }
 }

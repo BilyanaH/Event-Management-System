@@ -4,6 +4,12 @@ import bg.fmi.eventplatform.domain.User;
 import bg.fmi.eventplatform.dto.request.UserRequest;
 import bg.fmi.eventplatform.exception.EmailAlreadyUsedException;
 import bg.fmi.eventplatform.exception.UserNotFoundException;
+import bg.fmi.eventplatform.repository.AgendaItemRepository;
+import bg.fmi.eventplatform.repository.EventAnalyticsRepository;
+import bg.fmi.eventplatform.repository.EventRepository;
+import bg.fmi.eventplatform.repository.FeedbackRepository;
+import bg.fmi.eventplatform.repository.RegistrationRepository;
+import bg.fmi.eventplatform.repository.TicketRepository;
 import bg.fmi.eventplatform.repository.UserRepository;
 import bg.fmi.eventplatform.service.UserService;
 import bg.fmi.eventplatform.vo.UserRole;
@@ -26,11 +32,29 @@ class UserServiceIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EventRepository eventRepository;
+    @Autowired
+    private AgendaItemRepository agendaItemRepository;
+    @Autowired
+    private TicketRepository ticketRepository;
+    @Autowired
+    private RegistrationRepository registrationRepository;
+    @Autowired
+    private FeedbackRepository feedbackRepository;
+    @Autowired
+    private EventAnalyticsRepository analyticsRepository;
 
     private UserRequest userRequest;
 
     @BeforeEach
     void setUp() {
+        analyticsRepository.deleteAll();
+        feedbackRepository.deleteAll();
+        registrationRepository.deleteAll();
+        agendaItemRepository.deleteAll();
+        ticketRepository.deleteAll();
+        eventRepository.deleteAll();
         userRepository.deleteAll();
 
         userRequest = new UserRequest(
