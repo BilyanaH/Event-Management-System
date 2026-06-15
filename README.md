@@ -52,10 +52,11 @@ Swagger UI is exposed at `http://localhost:8080/swagger-ui.html`. Click *Authori
 ./mvnw test
 ```
 
+Tests run against an in-memory H2 database with the `test` profile and do not require MySQL.
+
+
 ### Frontend
 https://github.com/v4ni0/Event-Management-System-Ui
-
-Tests run against an in-memory H2 database with the `test` profile and do not require MySQL.
 
 ---
 ## Authentication
