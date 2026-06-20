@@ -16,6 +16,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     long countByEventId(Long eventId);
 
-    @Query("SELECT COALESCE(SUM(t.price * t.quantitySold), 0) FROM Ticket t WHERE t.event.id = :eventId")
+    @Query(value = "SELECT COALESCE(SUM(price * quantity_sold), 0) FROM tickets WHERE event_id = :eventId", nativeQuery = true)
     BigDecimal sumRevenueByEventId(@Param("eventId") Long eventId);
 }

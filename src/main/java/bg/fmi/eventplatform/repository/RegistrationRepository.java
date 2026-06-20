@@ -31,9 +31,9 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
 
     long countByEventIdAndStatus(Long eventId, RegistrationStatus status);
 
-    @Query("SELECT FUNCTION('DATE', r.registeredAt) AS day, COUNT(r) AS total " +
-            "FROM Registration r WHERE r.event.id = :eventId " +
-            "GROUP BY FUNCTION('DATE', r.registeredAt) " +
-            "ORDER BY FUNCTION('DATE', r.registeredAt)")
+    @Query(value = "SELECT CAST(registered_at AS DATE) AS day, COUNT(*) AS total " +
+            "FROM registrations WHERE event_id = :eventId " +
+            "GROUP BY CAST(registered_at AS DATE) " +
+            "ORDER BY CAST(registered_at AS DATE)", nativeQuery = true)
     List<Object[]> countRegistrationsPerDay(@Param("eventId") Long eventId);
 }

@@ -19,15 +19,15 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     long countByEventId(Long eventId);
 
-    @Query("SELECT AVG(f.overallRating) FROM Feedback f WHERE f.event.id = :eventId")
+    @Query(value = "SELECT AVG(overall_rating) FROM feedback WHERE event_id = :eventId", nativeQuery = true)
     Double findAverageOverallRating(@Param("eventId") Long eventId);
 
-    @Query("SELECT AVG(f.venueRating) FROM Feedback f WHERE f.event.id = :eventId")
+    @Query(value = "SELECT AVG(venue_rating) FROM feedback WHERE event_id = :eventId", nativeQuery = true)
     Double findAverageVenueRating(@Param("eventId") Long eventId);
 
-    @Query("SELECT AVG(f.contentRating) FROM Feedback f WHERE f.event.id = :eventId")
+    @Query(value = "SELECT AVG(content_rating) FROM feedback WHERE event_id = :eventId", nativeQuery = true)
     Double findAverageContentRating(@Param("eventId") Long eventId);
 
-    @Query("SELECT AVG(f.organizationRating) FROM Feedback f WHERE f.event.id = :eventId")
+    @Query(value = "SELECT AVG(organization_rating) FROM feedback WHERE event_id = :eventId", nativeQuery = true)
     Double findAverageOrganizationRating(@Param("eventId") Long eventId);
 }

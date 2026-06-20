@@ -44,10 +44,7 @@ public class AnalyticsService {
         this.ticketRepository = ticketRepository;
     }
 
-    @Transactional
-    public EventAnalyticsResponse dashboard(Long eventId, User principal) throws AccessDeniedException {
-        Event event = loadEventForOrganizer(eventId, principal);
-
+    public EventAnalyticsResponse computeAnalytics(Long eventId, Event event) {
         long totalRegistrations = registrationRepository.countByEventId(eventId);
         long totalCheckIns = registrationRepository.countByEventIdAndStatus(eventId, RegistrationStatus.CHECKED_IN);
         long totalCancellations = registrationRepository.countByEventIdAndStatus(eventId, RegistrationStatus.CANCELLED);
@@ -66,6 +63,12 @@ public class AnalyticsService {
         analytics.setComputedAt(LocalDateTime.now());
 
         return EventAnalyticsResponse.fromEntity(analyticsRepository.save(analytics));
+    }
+
+    @Transactional
+    public EventAnalyticsResponse dashboard(Long eventId, User principal) throws AccessDeniedException {
+        Event event = loadEventForOrganizer(eventId, principal);
+        return computeAnalytics(eventId, event);
     }
 
     public List<AttendancePoint> attendance(Long eventId, User principal) throws AccessDeniedException {

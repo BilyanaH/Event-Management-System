@@ -3,18 +3,16 @@ package bg.fmi.eventplatform.service;
 import bg.fmi.eventplatform.domain.Event;
 import bg.fmi.eventplatform.domain.User;
 import bg.fmi.eventplatform.dto.request.EventRequest;
+import bg.fmi.eventplatform.dto.response.EventAnalyticsResponse;
 import bg.fmi.eventplatform.dto.response.EventResponse;
 import bg.fmi.eventplatform.dto.response.EventSummaryResponse;
 import bg.fmi.eventplatform.exception.EntityNotFoundException;
 import bg.fmi.eventplatform.exception.UserNotFoundException;
 import bg.fmi.eventplatform.repository.EventRepository;
-import bg.fmi.eventplatform.repository.FeedbackRepository;
-import bg.fmi.eventplatform.repository.RegistrationRepository;
 import bg.fmi.eventplatform.repository.TicketRepository;
 import bg.fmi.eventplatform.repository.UserRepository;
 import bg.fmi.eventplatform.vo.EventCategory;
 import bg.fmi.eventplatform.vo.EventStatus;
-import bg.fmi.eventplatform.vo.RegistrationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,20 +32,17 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-    private final RegistrationRepository registrationRepository;
-    private final FeedbackRepository feedbackRepository;
     private final TicketRepository ticketRepository;
+    private final AnalyticsService analyticsService;
 
     public EventService(EventRepository eventRepository,
                         UserRepository userRepository,
-                        RegistrationRepository registrationRepository,
-                        FeedbackRepository feedbackRepository,
-                        TicketRepository ticketRepository) {
+                        TicketRepository ticketRepository,
+                        AnalyticsService analyticsService) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
-        this.registrationRepository = registrationRepository;
-        this.feedbackRepository = feedbackRepository;
         this.ticketRepository = ticketRepository;
+        this.analyticsService = analyticsService;
     }
 
     public EventResponse createEvent(EventRequest eventRequest, Long organizerId) {
@@ -100,18 +95,20 @@ public class EventService {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with id " + id));
 
-        long totalRegistrations = registrationRepository.countByEventId(id);
-        long totalCheckIns = registrationRepository.countByEventIdAndStatus(id, RegistrationStatus.CHECKED_IN);
-        long activeRegistrations = registrationRepository.countByEventIdAndStatus(id, RegistrationStatus.CONFIRMED) + totalCheckIns;
-        Integer availableCapacity = event.getCapacity() == null
-                ? null
-                : Math.max(0, event.getCapacity() - (int) activeRegistrations);
-        long ticketTypesCount = ticketRepository.countByEventId(id);
-        Double avgRating = feedbackRepository.findAverageOverallRating(id);
-        BigDecimal revenue = ticketRepository.sumRevenueByEventId(id);
+        EventAnalyticsResponse analytics = analyticsService.computeAnalytics(id, event);
 
-        return EventSummaryResponse.of(event, totalRegistrations, totalCheckIns, availableCapacity,
-                ticketTypesCount, avgRating, revenue == null ? BigDecimal.ZERO : revenue);
+        int activeRegistrations = analytics.totalRegistrations() - analytics.totalCancellations();
+        Integer availableCapacity = event.getCapacity() == null ? null : Math.max(0, event.getCapacity() - activeRegistrations);
+        long ticketTypesCount = ticketRepository.countByEventId(id);
+        Double avgRating = analytics.averageRating() == null ? null : analytics.averageRating().doubleValue();
+        BigDecimal revenue = analytics.revenue() == null ? BigDecimal.ZERO : analytics.revenue();
+        return EventSummaryResponse.of(event,
+                analytics.totalRegistrations(),
+                analytics.totalCheckIns(),
+                availableCapacity,
+                ticketTypesCount,
+                avgRating,
+                revenue);
     }
 
 

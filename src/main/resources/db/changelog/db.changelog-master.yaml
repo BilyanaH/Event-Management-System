@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/001-create-users-table.yaml
+  - include:
+      file: db/changelog/changes/002-create-events-table.sql
+  - include:
+      file: db/changelog/changes/003-create-speakers-table.sql
+  - include:
+      file: db/changelog/changes/004-create-agenda-items-table.sql
+  - include:
+      file: db/changelog/changes/005-create-tickets-table.sql
+  - include:
+      file: db/changelog/changes/006-create-registrations-table.sql
+  - include:
+      file: db/changelog/changes/007-create-feedback-table.sql
+  - include:
+      file: db/changelog/changes/008-create-presentation-materials-table.sql
+  - include:
+      file: db/changelog/changes/009-create-event-analytics-table.sql
