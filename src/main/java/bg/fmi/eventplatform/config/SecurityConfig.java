@@ -61,6 +61,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/speakers").hasAnyRole("ORGANIZER", "SPEAKER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/speakers/*").hasAnyRole("ORGANIZER", "SPEAKER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/speakers/*/materials").hasAnyRole("ORGANIZER", "SPEAKER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/uploads/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/users/me", "/users/me/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/users/me").authenticated()
                         .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")

@@ -29,7 +29,7 @@ Copy `.env.example` to `.env` and fill in real values, or export them in your sh
 | `CLOUDINARY_API_KEY` | _empty_ | Cloudinary API key |
 | `CLOUDINARY_API_SECRET` | _empty_ | Cloudinary API secret |
 
-If the Cloudinary vars are blank the app still boots, but `POST /speakers/{id}/materials` will fail until they are set.
+If the Cloudinary vars are blank the app still boots, but `POST /uploads/images` and `POST /speakers/{id}/materials` will fail until they are set.
 
 ### Start MySQL via Docker
 
@@ -162,6 +162,12 @@ All endpoints except those under `/auth/**`, the GET endpoints on events/speaker
 |--------|----------|-------------|
 | `POST` | `/speakers/{id}/materials` | Upload presentation file |
 | `GET` | `/speakers/{id}/materials` | List materials |
+
+#### Image uploads 
+
+| Method | Endpoint          | Description                                                                                                                                 |
+|--------|-------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| `POST` | `/uploads/images` | Upload an image (multipart `file`, max 10MB, image/* only. <br/>Returns `{url}` to use as `Event.imageUrl` or `Speaker.photoUrl`. <br/>Auth required. |
 
 ---
 
