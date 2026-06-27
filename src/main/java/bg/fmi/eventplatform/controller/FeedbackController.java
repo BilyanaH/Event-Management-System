@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -51,5 +51,11 @@ public class FeedbackController {
     @Operation(summary = "Aggregated feedback ratings")
     public ResponseEntity<FeedbackSummaryResponse> summary(@PathVariable Long eventId) {
         return ResponseEntity.ok(feedbackService.summarize(eventId));
+    }
+
+    @GetMapping("/ai-summary")
+    @Operation(summary = "AI-generated feedback summary")
+    public ResponseEntity<String> aiSummary(@PathVariable Long eventId) {
+        return ResponseEntity.ok(feedbackService.aiSummarize(eventId));
     }
 }

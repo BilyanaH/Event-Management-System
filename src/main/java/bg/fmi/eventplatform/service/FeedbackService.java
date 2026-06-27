@@ -14,7 +14,7 @@ import bg.fmi.eventplatform.repository.RegistrationRepository;
 import bg.fmi.eventplatform.vo.RegistrationStatus;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,12 +25,16 @@ public class FeedbackService {
     private final EventRepository eventRepository;
     private final RegistrationRepository registrationRepository;
 
+    private final GrokService grokService;
+
     public FeedbackService(FeedbackRepository feedbackRepository,
                            EventRepository eventRepository,
-                           RegistrationRepository registrationRepository) {
+                           RegistrationRepository registrationRepository,
+                           GrokService grokService) {
         this.feedbackRepository = feedbackRepository;
         this.eventRepository = eventRepository;
         this.registrationRepository = registrationRepository;
+        this.grokService = grokService;
     }
 
     public FeedbackResponse submit(Long eventId, FeedbackRequest request, User principal) {
@@ -80,5 +84,34 @@ public class FeedbackService {
                 feedbackRepository.findAverageContentRating(eventId),
                 feedbackRepository.findAverageOrganizationRating(eventId)
         );
+    }
+
+    public String aiSummarize(Long eventId) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new EntityNotFoundException("Event not found with id " + eventId);
+        }
+
+        List<Feedback> feedbacks = feedbackRepository.findByEventId(eventId);
+        if (feedbacks.isEmpty()) {
+            return "No feedback submitted yet.";
+        }
+
+        return grokService.summarizeFeedback(buildPrompt(feedbacks));
+    }
+
+    private String buildPrompt(List<Feedback> feedbacks){
+        StringBuilder sb = new StringBuilder(
+                "Summarize this event feedback for people deciding whether to buy a ticket. " +
+                "Use this exact structure:\n" +
+                "<p><b>Highlights:</b> [what attendees liked most]</p>\n" +
+                "<p><b>Room for improvement:</b> [complaints or 'Nothing significant' if none]</p>\n" +
+                "<p><b>Overall vibe:</b> [1-2 sentences on the general sentiment]</p>\n" +
+                "Be factual and neutral — no 'we', no corporate language, no filler. Write as if summarizing reviews for a stranger.\n\n"
+        );
+        for (Feedback f : feedbacks) {
+            sb.append("- Rating: ").append(f.getOverallRating())
+                    .append(", Comment: ").append(f.getComment()).append("\n");
+        }
+        return sb.toString();
     }
 }

@@ -45,11 +45,12 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/swagger-ui/**", "/swagger-ui.html",
-                                "/v3/api-docs", "/v3/api-docs/**", "/h2-console/**").permitAll()
+                                "/v3/api-docs", "/v3/api-docs/**", "/h2-console/**", "/error").permitAll()
                         .requestMatchers(HttpMethod.GET, "/events", "/events/*",
                                 "/events/*/summary", "/events/*/agenda",
                                 "/events/*/tickets", "/events/*/tickets/*",
-                                "/events/*/feedback/summary").permitAll()
+                                "/events/*/feedback/summary", "/events/*/feedback/ai-summary").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/events/*/feedback").hasAnyRole("ORGANIZER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/speakers", "/speakers/*",
                                 "/speakers/*/materials").permitAll()
                         .requestMatchers(HttpMethod.POST, "/events").hasAnyRole("ORGANIZER", "ADMIN")

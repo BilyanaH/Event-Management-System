@@ -13,6 +13,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Order(7)
@@ -40,19 +41,28 @@ public class FeedbackSeeder implements CommandLineRunner {
         Optional<Event> completed = eventRepository.findAll().stream()
                 .filter(e -> e.getStatus() == EventStatus.COMPLETED)
                 .findFirst();
-        Optional<User> reviewer = userRepository.findAll().stream().findFirst();
-        if (completed.isEmpty() || reviewer.isEmpty()) return;
+        List<User> users = userRepository.findAll();
+        if (completed.isEmpty() || users.isEmpty()) return;
 
-        Feedback feedback = new Feedback();
-        feedback.setEvent(completed.get());
-        feedback.setUser(reviewer.get());
-        feedback.setOverallRating(5);
-        feedback.setVenueRating(5);
-        feedback.setContentRating(4);
-        feedback.setOrganizationRating(5);
-        feedback.setComment("Beautifully curated, would attend again.");
-        feedback.setSubmittedAt(LocalDateTime.now().minusDays(7));
+        Event event = completed.get();
 
-        feedbackRepository.save(feedback);
+        Object[][] entries = {
+            { users.get(0), 5, 5, 4, 5, "Beautifully curated, would attend again." },
+            { users.size() > 1 ? users.get(1) : users.get(0), 3, 4, 3, 2, "Content was good but the venue was too crowded and the schedule ran late." },
+            { users.size() > 2 ? users.get(2) : users.get(0), 4, 3, 5, 4, "Great speakers and topics. Registration process was a bit slow." }
+        };
+
+        for (Object[] entry : entries) {
+            Feedback f = new Feedback();
+            f.setEvent(event);
+            f.setUser((User) entry[0]);
+            f.setOverallRating((Integer) entry[1]);
+            f.setVenueRating((Integer) entry[2]);
+            f.setContentRating((Integer) entry[3]);
+            f.setOrganizationRating((Integer) entry[4]);
+            f.setComment((String) entry[5]);
+            f.setSubmittedAt(LocalDateTime.now().minusDays(7));
+            feedbackRepository.save(f);
+        }
     }
 }
