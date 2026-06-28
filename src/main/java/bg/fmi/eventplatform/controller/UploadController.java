@@ -44,7 +44,10 @@ public class UploadController {
         if (file == null || file.isEmpty()) {
             throw new ValidationException("File is required");
         }
-        // TODO add validation if content type is valid
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new ValidationException("Only image files are allowed");
+        }
         if(file.getSize() > MAX_IMAGE_BYTES) {
             throw new ValidationException("Max image size is 10MB");
         }

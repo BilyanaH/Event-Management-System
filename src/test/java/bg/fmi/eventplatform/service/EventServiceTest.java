@@ -3,6 +3,7 @@ package bg.fmi.eventplatform.service;
 import bg.fmi.eventplatform.domain.Event;
 import bg.fmi.eventplatform.domain.User;
 import bg.fmi.eventplatform.dto.request.EventRequest;
+import bg.fmi.eventplatform.dto.response.EventAnalyticsResponse;
 import bg.fmi.eventplatform.dto.response.EventResponse;
 import bg.fmi.eventplatform.exception.EntityNotFoundException;
 import bg.fmi.eventplatform.repository.EventRepository;
@@ -19,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -40,6 +42,8 @@ class EventServiceTest {
     private FeedbackRepository feedbackRepository;
     @Mock
     private TicketRepository ticketRepository;
+    @Mock
+    private AnalyticsService analyticsService;
 
     @InjectMocks
     private EventService eventService;
@@ -110,11 +114,10 @@ class EventServiceTest {
     @Test
     void getEventSummaryAggregates() {
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
-        when(registrationRepository.countByEventId(1L)).thenReturn(5L);
-        when(registrationRepository.countByEventIdAndStatus(eq(1L), any())).thenReturn(2L);
+        when(analyticsService.computeAnalytics(eq(1L), any(Event.class)))
+                .thenReturn(new EventAnalyticsResponse(1L, 5, 0, 0, 0,
+                        BigDecimal.valueOf(4.5), BigDecimal.valueOf(500), null));
         when(ticketRepository.countByEventId(1L)).thenReturn(3L);
-        when(feedbackRepository.findAverageOverallRating(1L)).thenReturn(4.5);
-        when(ticketRepository.sumRevenueByEventId(1L)).thenReturn(java.math.BigDecimal.valueOf(500));
 
         var summary = eventService.getEventSummary(1L);
 

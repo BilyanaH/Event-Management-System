@@ -43,7 +43,7 @@ public class UploadControllerTest {
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals("https://cdn.example.com/images/photo/png", response.getBody().url());
+        assertEquals("https://cdn.example.com/images/photo.png", response.getBody().url());
     }
 
     @Test

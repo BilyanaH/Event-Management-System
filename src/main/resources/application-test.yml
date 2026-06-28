@@ -6,12 +6,27 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+  liquibase:
+    enabled: false
   jpa:
     hibernate:
       ddl-auto: create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+  ai:
+    openai:
+      api-key: test-key
+      base-url: https://api.groq.com/openai/v1
+      chat:
+        options:
+          model: llama-3.3-70b-versatile
+  mail:
+    host: localhost
+    port: 3025
+    username: test
+    password: test
+    from: noreply@test.com
 
 cors:
   allowed-origin: http://localhost:3000
