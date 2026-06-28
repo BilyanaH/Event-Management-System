@@ -37,6 +37,8 @@ class RegistrationServiceTest {
     private EventRepository eventRepository;
     @Mock
     private TicketRepository ticketRepository;
+    @Mock
+    private EmailService emailService;
 
     @InjectMocks
     private RegistrationService registrationService;

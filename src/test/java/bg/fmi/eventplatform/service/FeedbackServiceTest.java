@@ -33,6 +33,8 @@ class FeedbackServiceTest {
     private EventRepository eventRepository;
     @Mock
     private RegistrationRepository registrationRepository;
+    @Mock
+    private GrokService grokService;
 
     @InjectMocks
     private FeedbackService feedbackService;
