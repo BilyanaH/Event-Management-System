@@ -18,6 +18,7 @@
 		<jjwt.version>0.12.6</jjwt.version>
 		<cloudinary.version>1.39.0</cloudinary.version>
 		<spring-ai.version>2.0.0</spring-ai.version>
+		<sonar.maven.plugin.version>4.0.0.4121</sonar.maven.plugin.version>
 	</properties>
 	<name/>
 	<description/>
@@ -163,6 +164,11 @@
 						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
 					</compilerArgs>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>${sonar.maven.plugin.version}</version>
 			</plugin>
 		</plugins>
 	</build>
