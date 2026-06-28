@@ -67,7 +67,7 @@ public class TicketService {
         ticketRepository.delete(ticket);
     }
 
-    void applyDerivedStatus(Ticket ticket) {
+    private void applyDerivedStatus(Ticket ticket) {
         if (ticket.getSaleEnd() != null && ticket.getSaleEnd().isBefore(LocalDateTime.now())) {
             ticket.setStatus(TicketStatus.SALE_ENDED);
         } else if (ticket.getQuantitySold() != null && ticket.getQuantitySold() >= ticket.getQuantityAvailable()) {
