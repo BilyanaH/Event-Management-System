@@ -13,6 +13,7 @@ import bg.fmi.eventplatform.repository.TicketRepository;
 import bg.fmi.eventplatform.repository.UserRepository;
 import bg.fmi.eventplatform.vo.EventCategory;
 import bg.fmi.eventplatform.vo.EventStatus;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -87,7 +88,7 @@ public class EventService {
 
     public EventResponse getEventById(Long id) {
         Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Event not found with id" + id));
+                .orElseThrow(() -> new EntityNotFoundException("Event not found with id " + id));
         return EventResponse.fromEntity(event);
     }
 
@@ -111,10 +112,10 @@ public class EventService {
                 revenue);
     }
 
-
+    @Transactional
     public EventResponse updateEvent(Long id, EventRequest eventRequest, User organizer) throws AccessDeniedException {
         Event savedEvent = eventRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Event not found with id" + id));
+                .orElseThrow(() -> new EntityNotFoundException("Event not found with id " + id));
 
         if (!savedEvent.getOrganizer().getId().equals(organizer.getId())) {
             throw new AccessDeniedException("User is not the organizer of this event");

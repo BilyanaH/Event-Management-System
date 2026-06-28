@@ -27,6 +27,10 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final String ROLE_ADMIN = "ADMIN";
+    private static final String ROLE_ORGANIZER = "ORGANIZER";
+    private static final String ROLE_SPEAKER = "SPEAKER";
+
     @Value("${cors.allowed-origin}")
     private String allowedOrigin;
 
@@ -50,23 +54,23 @@ public class SecurityConfig {
                                 "/events/*/summary", "/events/*/agenda",
                                 "/events/*/tickets", "/events/*/tickets/*",
                                 "/events/*/feedback/summary", "/events/*/feedback/ai-summary").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/events/*/feedback").hasAnyRole("ORGANIZER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/events/*/feedback").hasAnyRole(ROLE_ORGANIZER, ROLE_ADMIN)
                         .requestMatchers(HttpMethod.GET, "/speakers", "/speakers/*",
                                 "/speakers/*/materials").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/events").hasAnyRole("ORGANIZER", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/events/*").hasAnyRole("ORGANIZER", "ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/events/*/status").hasAnyRole("ORGANIZER", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/events/*").hasAnyRole("ORGANIZER", "ADMIN")
-                        .requestMatchers("/events/*/tickets/**").hasAnyRole("ORGANIZER", "ADMIN")
-                        .requestMatchers("/events/*/agenda/**").hasAnyRole("ORGANIZER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/speakers").hasAnyRole("ORGANIZER", "SPEAKER", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/speakers/*").hasAnyRole("ORGANIZER", "SPEAKER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/speakers/*/materials").hasAnyRole("ORGANIZER", "SPEAKER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/events").hasAnyRole(ROLE_ORGANIZER, ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.PUT, "/events/*").hasAnyRole(ROLE_ORGANIZER, ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.PATCH, "/events/*/status").hasAnyRole(ROLE_ORGANIZER, ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, "/events/*").hasAnyRole(ROLE_ORGANIZER, ROLE_ADMIN)
+                        .requestMatchers("/events/*/tickets/**").hasAnyRole(ROLE_ORGANIZER, ROLE_ADMIN)
+                        .requestMatchers("/events/*/agenda/**").hasAnyRole(ROLE_ORGANIZER, ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.POST, "/speakers").hasAnyRole(ROLE_ORGANIZER, ROLE_SPEAKER, ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.PUT, "/speakers/*").hasAnyRole(ROLE_ORGANIZER, ROLE_SPEAKER, ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.POST, "/speakers/*/materials").hasAnyRole(ROLE_ORGANIZER, ROLE_SPEAKER, ROLE_ADMIN)
                         .requestMatchers("/uploads/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/users/me", "/users/me/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/users/me").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/users/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users").hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.GET, "/users/*").hasRole(ROLE_ADMIN)
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

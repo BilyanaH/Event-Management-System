@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "password_reset_tokens")
@@ -29,6 +30,6 @@ public class PasswordResetToken {
     private LocalDateTime expiresAt;
 
     public boolean isExpired() {
-        return LocalDateTime.now().isAfter(expiresAt);
+        return LocalDateTime.now(ZoneId.of("UTC")).isAfter(expiresAt);
     }
 }

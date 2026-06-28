@@ -108,9 +108,9 @@ public class FeedbackService {
                 "<p><b>Overall vibe:</b> [1-2 sentences on the general sentiment]</p>\n" +
                 "Be factual and neutral — no 'we', no corporate language, no filler. Write as if summarizing reviews for a stranger.\n\n"
         );
-        for (Feedback f : feedbacks) {
-            sb.append("- Rating: ").append(f.getOverallRating())
-                    .append(", Comment: ").append(f.getComment()).append("\n");
+        for (Feedback feedback : feedbacks) {
+            sb.append("- Rating: ").append(feedback.getOverallRating())
+                    .append(", Comment: ").append(feedback.getComment()).append("\n");
         }
         return sb.toString();
     }

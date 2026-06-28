@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Base64;
 
 @Service
@@ -45,7 +46,7 @@ PasswordResetService {
             PasswordResetToken resetToken = new PasswordResetToken();
             resetToken.setUser(user);
             resetToken.setToken(generateToken());
-            resetToken.setExpiresAt(LocalDateTime.now().plusHours(1));
+            resetToken.setExpiresAt(LocalDateTime.now(ZoneId.of("UTC")).plusHours(1));
             tokenRepository.save(resetToken);
 
             String resetLink = frontendUrl + "/reset-password?token=" + resetToken.getToken();
@@ -65,7 +66,7 @@ PasswordResetService {
 
         User user = resetToken.getUser();
         user.setPassword(passwordEncoder.encode(newPassword));
-        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now(ZoneId.of("UTC")));
         userRepository.save(user);
         tokenRepository.delete(resetToken);
     }
