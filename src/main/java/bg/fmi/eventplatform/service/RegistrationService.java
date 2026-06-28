@@ -33,14 +33,17 @@ public class RegistrationService {
     private final RegistrationRepository registrationRepository;
     private final EventRepository eventRepository;
     private final TicketRepository ticketRepository;
+    private final EmailService emailService;
     private final SecureRandom secureRandom = new SecureRandom();
 
     public RegistrationService(RegistrationRepository registrationRepository,
                                EventRepository eventRepository,
-                               TicketRepository ticketRepository) {
+                               TicketRepository ticketRepository,
+                               EmailService emailService) {
         this.registrationRepository = registrationRepository;
         this.eventRepository = eventRepository;
         this.ticketRepository = ticketRepository;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -90,7 +93,9 @@ public class RegistrationService {
         }
         ticketRepository.save(ticket);
 
-        return RegistrationResponse.fromEntity(registrationRepository.save(registration));
+        Registration saved = registrationRepository.save(registration);
+        emailService.sendRegistrationConfirmation(saved);
+        return RegistrationResponse.fromEntity(saved);
     }
 
     public List<RegistrationResponse> listForEvent(Long eventId, User principal) throws AccessDeniedException {
@@ -140,7 +145,9 @@ public class RegistrationService {
         }
         ticketRepository.save(ticket);
 
-        return RegistrationResponse.fromEntity(registrationRepository.save(registration));
+        Registration saved = registrationRepository.save(registration);
+        emailService.sendCancellationConfirmation(saved);
+        return RegistrationResponse.fromEntity(saved);
     }
 
     @Transactional
@@ -155,7 +162,9 @@ public class RegistrationService {
         }
         registration.setStatus(RegistrationStatus.CHECKED_IN);
         registration.setCheckedInAt(LocalDateTime.now());
-        return RegistrationResponse.fromEntity(registrationRepository.save(registration));
+        Registration saved = registrationRepository.save(registration);
+        emailService.sendCheckInConfirmation(saved);
+        return RegistrationResponse.fromEntity(saved);
     }
 
     public Page<RegistrationResponse> listMine(User principal, Pageable pageable) {

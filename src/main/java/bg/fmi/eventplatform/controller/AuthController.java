@@ -1,9 +1,12 @@
 package bg.fmi.eventplatform.controller;
 
+import bg.fmi.eventplatform.dto.request.ForgotPasswordRequest;
 import bg.fmi.eventplatform.dto.request.LoginRequest;
+import bg.fmi.eventplatform.dto.request.ResetPasswordRequest;
 import bg.fmi.eventplatform.dto.request.UserRequest;
 import bg.fmi.eventplatform.dto.response.AuthResponse;
 import bg.fmi.eventplatform.service.AuthService;
+import bg.fmi.eventplatform.service.PasswordResetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,9 +26,11 @@ public class AuthController {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final AuthService authService;
+    private final PasswordResetService passwordResetService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, PasswordResetService passwordResetService) {
         this.authService = authService;
+        this.passwordResetService = passwordResetService;
     }
 
     @PostMapping("/register")
@@ -38,6 +43,20 @@ public class AuthController {
     @Operation(summary = "Login, returns JWT")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
         return ResponseEntity.ok(authService.login(loginRequest));
+    }
+
+    @PostMapping("/forgot-password")
+    @Operation(summary = "Send password reset email")
+    public ResponseEntity<Void> forgotPassword(@RequestBody @Valid ForgotPasswordRequest request) {
+        passwordResetService.requestReset(request.email());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "Reset password using token from email")
+    public ResponseEntity<Void> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
+        passwordResetService.resetPassword(request.token(), request.newPassword());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/logout")
